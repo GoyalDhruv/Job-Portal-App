@@ -6,6 +6,6 @@ const router = express.Router()
 
 router.route('/register').post(register)
 router.route('/login').post(login)
-router.route('/profile/update').post(isAuthenticated, UpdateProfile)
+router.route('/profile/update').put(isAuthenticated, UpdateProfile)
 router.route('/logout').post(isAuthenticated, logout)
 export default router;
