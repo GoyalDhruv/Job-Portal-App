@@ -4,8 +4,8 @@ import jwt from "jsonwebtoken"
 
 export const register = async (req, res) => {
     try {
-        const { fullname, email, phoneNumber, password, role } = req.body;
-        if (!fullname || !email || !phoneNumber || !password || !role) {
+        const { fullName, email, phoneNumber, password, role } = req.body;
+        if (!fullName || !email || !phoneNumber || !password || !role) {
             return res.status(400).json({ message: "All fields are required.", success: false })
         }
         const user = await User.findOne({ email });
@@ -14,7 +14,7 @@ export const register = async (req, res) => {
         }
         const hashedPassword = await bcrypt.hash(password, 10)
         await User.create({
-            fullName: fullname,
+            fullName,
             email,
             phoneNumber,
             password: hashedPassword,
@@ -24,7 +24,7 @@ export const register = async (req, res) => {
         return res.status(201).json({ message: "Account created successfully.", success: true })
     }
     catch (error) {
-        return res.status(400).json({ message: error.message })
+        return res.status(400).json({ message: error.message, success: false })
     }
 }
 
@@ -47,7 +47,7 @@ export const login = async (req, res) => {
         }
         // checking for role 
         if (role !== user.role) {
-            return res.status(401).json({ message: "Account does not exits with the current role", success: false })
+            return res.status(401).json({ message: "Account does not exists with the current role", success: false })
         }
 
         const tokendata = {

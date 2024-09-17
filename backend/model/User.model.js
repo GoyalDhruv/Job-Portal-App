@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const UserSchema =new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
     fullName: {
         type: String,
         required: true
@@ -20,8 +20,8 @@ const UserSchema =new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ['student', 'recruiter'],
-        default: 'student',
+        enum: ['Student', 'Recruiter'],
+        default: 'Student',
         required: true
     },
     profile: {

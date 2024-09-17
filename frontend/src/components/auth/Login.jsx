@@ -2,21 +2,51 @@ import React, { useState } from 'react'
 import Navbar from '../shared/Navbar'
 import { Label } from '../ui/label'
 import { Input } from '../ui/input'
-import { RadioGroup, RadioGroupItem } from '../ui/radio-group'
+import { RadioGroup } from '../ui/radio-group'
 import { Button } from '../ui/button'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import { USER_API_END_POINT } from '@/utils/constant'
+import { toast } from 'sonner'
 
 function Login() {
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [role, setRole] = useState('Student')
 
+    const navigate = useNavigate()
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const formData = {
+            email,
+            password,
+            role,
+        }
+        try {
+            const res = await axios.post(`${USER_API_END_POINT}/login`, formData,
+                {
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    withCredentials: true,
+                })
+            if (res.data.success) {
+                toast.success(res.data.message)
+                navigate('/')
+            }
+        } catch (error) {
+            toast.error(error.response.data.message)
+            console.error(error)
+        }
+    }
 
     return (
         <>
             <Navbar />
             <div className='flex items-center justify-center max-w-7xl mx-auto'>
-                <form className='w-1/2 border border-gray-200 rounded rounded-md p-4 my-10'>
+                <form onSubmit={handleSubmit} className='w-1/2 border border-gray-200 rounded rounded-md p-4 my-10'>
                     <h1 className='font-bold text-xl mb-5'>Login</h1>
                     <div className='my-2'>
                         <Label>Email</Label>
@@ -39,14 +69,28 @@ function Login() {
                         />
                     </div>
                     <div className='flex items-center justify-between gap-10 mt-5 mb-2'>
-                        <RadioGroup className='flex items-center gap-4' defaultValue="Student">
+                        <RadioGroup
+                            className='flex items-center gap-4'
+                            value={role}
+                            onChange={(e) => setRole(e.target.value)}
+                        >
                             <div className="flex items-center space-x-2">
-                                <RadioGroupItem value="Student" id="r1" />
-                                <Label htmlFor="r1">Student</Label>
+                                <Input
+                                    type="radio"
+                                    name="role"
+                                    id="student"
+                                    value="Student"
+                                />
+                                <Label htmlFor="student">Student</Label>
                             </div>
                             <div className="flex items-center space-x-2">
-                                <RadioGroupItem value="Recruiter" id="r2" />
-                                <Label htmlFor="r2">Recruiter</Label>
+                                <Input
+                                    type="radio"
+                                    name="role"
+                                    id="recruiter"
+                                    value="Recruiter"
+                                />
+                                <Label htmlFor="recruiter">Recruiter</Label>
                             </div>
                         </RadioGroup>
                     </div>
