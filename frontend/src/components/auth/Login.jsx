@@ -8,6 +8,9 @@ import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { USER_API_END_POINT } from '@/utils/constant'
 import { toast } from 'sonner'
+import { useDispatch, useSelector } from 'react-redux'
+import { setLoading } from '@/redux/authSlice'
+import { Loader2 } from 'lucide-react'
 
 function Login() {
 
@@ -16,6 +19,8 @@ function Login() {
     const [role, setRole] = useState('Student')
 
     const navigate = useNavigate()
+    const { loading } = useSelector(store => store.auth)
+    const dispatch = useDispatch()
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -25,6 +30,7 @@ function Login() {
             role,
         }
         try {
+            dispatch(setLoading(true))
             const res = await axios.post(`${USER_API_END_POINT}/login`, formData,
                 {
                     headers: {
@@ -39,6 +45,8 @@ function Login() {
         } catch (error) {
             toast.error(error.response.data.message)
             console.error(error)
+        } finally {
+            dispatch(setLoading(false))
         }
     }
 
@@ -94,9 +102,14 @@ function Login() {
                             </div>
                         </RadioGroup>
                     </div>
-                    <Button type='submit' className='w-full my-4'>
-                        Login
-                    </Button>
+                    {
+                        loading ?
+                            <Button className='w-full my-4'><Loader2 className='mr-2 w-4 h-4 animate-spin' />Please Wait</Button>
+                            :
+                            <Button type='submit' className='w-full my-4'>
+                                Login
+                            </Button>
+                    }
                     <span className='text-sm'>Don't have an account? <Link to='/signup' className='text-blue-600'>Signup</Link> </span>
                 </form>
             </div>
