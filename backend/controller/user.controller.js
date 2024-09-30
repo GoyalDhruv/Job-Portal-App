@@ -145,3 +145,31 @@ export const UpdateProfile = async (req, res) => {
 //         return res.status(500).json({ message: error.message, success: false });
 //     }
 // }
+
+export const changePassword = async (req, res) => {
+    try {
+        const userId = req.id;
+        const { currentPassword, newPassword, confirmPassword } = req.body;
+        if (!currentPassword || !newPassword || !confirmPassword) {
+            return res.status(400).json({ message: "All fields are required.", success: false });
+        }
+        let user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found", success: false });
+        }
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        if (!isMatch) {
+            return res.status(401).json({ message: "Incorrect current password", success: false });
+        }
+        if (newPassword !== confirmPassword) {
+            return res.status(400).json({ message: "Passwords do not match", success: false });
+        }
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        user.password = hashedPassword;
+        await user.save();
+        return res.status(200).json({ user, message: "Password updated successfully", success: true });
+
+    } catch (error) {
+        return res.status(500).json({ message: error.message, success: false });
+    }
+}

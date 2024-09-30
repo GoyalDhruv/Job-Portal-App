@@ -12,7 +12,7 @@ import { USER_API_END_POINT } from '@/utils/constant';
 import { useDispatch } from 'react-redux';
 import { setUser } from '@/redux/authSlice';
 
-function UpdateProfileModal({ openModal, setOpenModal, user }) {
+function UpdateProfileModal({ openModal, setOpenModal, user, updateProfile }) {
 
     const userskills = user?.profile?.skills.join(',')
 
@@ -24,114 +24,190 @@ function UpdateProfileModal({ openModal, setOpenModal, user }) {
     // const [resume, setIsResume] = useState('');
     const [loading, setLoading] = useState(false);
 
+    const [currentPassword, setCurrentPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+
     const dispatch = useDispatch()
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const formData = {
-            fullName,
-            phoneNumber,
-            bio,
-            skills,
-            // resume
-        }
-        try {
-            setLoading(true)
-            const res = await axios.put(`${USER_API_END_POINT}/profile/update`, formData,
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    withCredentials: true,
-                }
-            )
-            if (res.data.success) {
-                dispatch(setUser(res.data.user))
-                toast.success(res.data.message)
-                setOpenModal(false)
+        if (updateProfile) {
+            const formData = {
+                fullName,
+                phoneNumber,
+                bio,
+                skills,
+                // resume
             }
-        } catch (error) {
-            toast.error(error.response.data.message)
-            console.error(error)
+            try {
+                setLoading(true)
+                const res = await axios.put(`${USER_API_END_POINT}/profile/update`, formData,
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        withCredentials: true,
+                    }
+                )
+                if (res.data.success) {
+                    dispatch(setUser(res.data.user))
+                    toast.success(res.data.message)
+                    setOpenModal(false)
+                }
+            } catch (error) {
+                toast.error(error.response.data.message)
+                console.error(error)
+            }
+            finally {
+                setLoading(false)
+            }
         }
-        finally {
-            setLoading(false)
+        else {
+            const formData = {
+                currentPassword,
+                newPassword,
+                confirmPassword,
+            }
+            try {
+                setLoading(true)
+                const res = await axios.post(`${USER_API_END_POINT}/changePassword`, formData,
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        withCredentials: true,
+                    }
+                )
+                if (res.data.success) {
+                    dispatch(setUser(res.data.user))
+                    toast.success(res.data.message)
+                    setOpenModal(false)
+                }
+            } catch (error) {
+                toast.error(error.response.data.message)
+                console.error(error)
+            }
+            finally {
+                setLoading(false)
+            }
         }
     }
 
     return (
-        <Dialog open={openModal} onOpenChange={setOpenModal}>
+        <Dialog open={openModal} onOpenChange={setOpenModal} >
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Update Profile</DialogTitle>
+                    <DialogTitle>{updateProfile ? 'Update Profile' : 'Change Password'}</DialogTitle>
                     <form onSubmit={(e) => handleSubmit(e)}>
                         <div className='grid gap-4 py-4'>
-                            <div className='grid grid-cols-4 items-center gap-4'>
-                                <Label htmlFor='fullName'>Full Name</Label>
-                                <Input
-                                    type='text'
-                                    id='fullName'
-                                    className='col-span-3'
-                                    value={fullName}
-                                    onChange={(e) => setFullName(e.target.value)}
-                                />
-                            </div>
-                            {/* <div className='grid grid-cols-4 items-center gap-4'>
-                                <Label htmlFor='email'>Email</Label>
-                                <Input
-                                    type='email'
-                                    id='email'
-                                    className='col-span-3'
-                                    name={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                />
-                            </div> */}
-                            <div className='grid grid-cols-4 items-center gap-4'>
-                                <Label htmlFor='phoneNumber'>Phone Number</Label>
-                                <Input
-                                    type="tel"
-                                    id='phoneNumber'
-                                    className='col-span-3'
-                                    name={phoneNumber}
-                                    maxLength="10"
-                                    value={phoneNumber}
-                                    pattern="^\d{10}$"
-                                    onChange={(e) => setPhoneNumber(e.target.value)}
-                                />
-                            </div>
-                            <div className='grid grid-cols-4 items-center gap-4'>
-                                <Label htmlFor='bio'>Bio</Label>
-                                <Input
-                                    type="text"
-                                    id='bio'
-                                    className='col-span-3'
-                                    name={bio}
-                                    value={bio}
-                                    onChange={(e) => setBio(e.target.value)}
-                                />
-                            </div>
-                            <div className='grid grid-cols-4 items-center gap-4'>
-                                <Label htmlFor='skills'>Skills</Label>
-                                <Input
-                                    type="text"
-                                    id='skills'
-                                    className='col-span-3'
-                                    name={skills}
-                                    value={skills}
-                                    onChange={(e) => setSkills(e.target.value)}
-                                />
-                            </div>
-                            {/* <div className='grid grid-cols-4 items-center gap-4'>
-                                <Label htmlFor='resume'>Resume</Label>
-                                <Input
-                                    type='file'
-                                    accept=".pdf,.doc,.docx"
-                                    onChange={(e) => setIsResume(e.target.files[0])}
-                                    id='resume'
-                                    className='col-span-3'
-                                    name={resume}
-                                />
-                            </div> */}
+                            {
+                                updateProfile ?
+                                    <>
+                                        <div className='grid grid-cols-4 items-center gap-4'>
+                                            <Label htmlFor='fullName'>Full Name</Label>
+                                            <Input
+                                                type='text'
+                                                id='fullName'
+                                                className='col-span-3'
+                                                value={fullName}
+                                                onChange={(e) => setFullName(e.target.value)}
+                                            />
+                                        </div>
+                                        {/* <div className='grid grid-cols-4 items-center gap-4'>
+                                            <Label htmlFor='email'>Email</Label>
+                                            <Input
+                                                type='email'
+                                                id='email'
+                                                className='col-span-3'
+                                                name={email}
+                                                onChange={(e) => setEmail(e.target.value)}
+                                            />
+                                        </div> */}
+                                        <div className='grid grid-cols-4 items-center gap-4'>
+                                            <Label htmlFor='phoneNumber'>Phone Number</Label>
+                                            <Input
+                                                type="tel"
+                                                id='phoneNumber'
+                                                className='col-span-3'
+                                                name={phoneNumber}
+                                                maxLength="10"
+                                                value={phoneNumber}
+                                                pattern="^\d{10}$"
+                                                onChange={(e) => setPhoneNumber(e.target.value)}
+                                            />
+                                        </div>
+                                        <div className='grid grid-cols-4 items-center gap-4'>
+                                            <Label htmlFor='bio'>Bio</Label>
+                                            <Input
+                                                type="text"
+                                                id='bio'
+                                                className='col-span-3'
+                                                name={bio}
+                                                value={bio}
+                                                onChange={(e) => setBio(e.target.value)}
+                                            />
+                                        </div>
+                                        <div className='grid grid-cols-4 items-center gap-4'>
+                                            <Label htmlFor='skills'>Skills</Label>
+                                            <Input
+                                                type="text"
+                                                id='skills'
+                                                className='col-span-3'
+                                                name={skills}
+                                                value={skills}
+                                                onChange={(e) => setSkills(e.target.value)}
+                                            />
+                                        </div>
+                                        {/* <div className='grid grid-cols-4 items-center gap-4'>
+                                            <Label htmlFor='resume'>Resume</Label>
+                                            <Input
+                                                type='file'
+                                                accept=".pdf,.doc,.docx"
+                                                onChange={(e) => setIsResume(e.target.files[0])}
+                                                id='resume'
+                                                className='col-span-3'
+                                                name={resume}
+                                            />
+                                        </div> */}
+                                    </>
+                                    :
+                                    <>
+                                        <div className='grid grid-cols-4 items-center gap-4'>
+                                            <Label htmlFor='currentPassword'>Current Password</Label>
+                                            <Input
+                                                type="password"
+                                                id='currentPassword'
+                                                className='col-span-3'
+                                                name={currentPassword}
+                                                value={currentPassword}
+                                                onChange={(e) => setCurrentPassword(e.target.value)}
+                                            />
+                                        </div>
+                                        <div className='grid grid-cols-4 items-center gap-4'>
+                                            <Label htmlFor='newPassword'>New Password</Label>
+                                            <Input
+                                                type="password"
+                                                id='newPassword'
+                                                className='col-span-3'
+                                                name={newPassword}
+                                                value={newPassword}
+                                                onChange={(e) => setNewPassword(e.target.value)}
+                                            />
+                                        </div>
+                                        <div className='grid grid-cols-4 items-center gap-4'>
+                                            <Label htmlFor='confirmPassword'>Confirm Password</Label>
+                                            <Input
+                                                type="password"
+                                                id='confirmPassword'
+                                                className='col-span-3'
+                                                name={confirmPassword}
+                                                value={confirmPassword}
+                                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                            />
+                                        </div>
+                                    </>
+                            }
                         </div>
                         <DialogFooter>
                             {
@@ -154,6 +230,7 @@ UpdateProfileModal.propTypes = {
     openModal: PropTypes.bool.isRequired,
     setOpenModal: PropTypes.func.isRequired,
     user: PropTypes.object,
+    updateProfile: PropTypes.bool.isRequired,
 };
 
 export default UpdateProfileModal
