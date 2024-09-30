@@ -89,10 +89,10 @@ export const logout = async (req, res) => {
 
 export const UpdateProfile = async (req, res) => {
     try {
-        const { fullname, phoneNumber, bio, skills } = req.body;
+        const { fullName, phoneNumber, bio, skills } = req.body;
         // const file = req.file;
 
-        // if (!fullname || !phoneNumber || !bio || !skills) {
+        // if (!fullName || !phoneNumber || !bio || !skills) {
         //     res.status(400).json({ message: "All fields are required.", success: false })
         // }
 
@@ -100,6 +100,8 @@ export const UpdateProfile = async (req, res) => {
 
         let skillArray;
         if (skills) skillArray = skills.split(',')
+
+        skillArray.map(item => item.trim())
 
         const userId = req.id // middleware authentication
         let user = await User.findById(userId)
@@ -110,7 +112,7 @@ export const UpdateProfile = async (req, res) => {
 
 
         // updating data
-        if (fullname) user.fullName = fullname
+        if (fullName) user.fullName = fullName
         if (phoneNumber) user.phoneNumber = phoneNumber
         if (bio) user.profile.bio = bio
         if (skills) user.profile.skills = skillArray
@@ -130,3 +132,16 @@ export const UpdateProfile = async (req, res) => {
         });
     }
 }
+
+// export const getProfile = async (req, res) => {
+//     try {
+//         const userId = req.id;
+//         const user = await User.findById(userId).select('-password');
+//         if (!user) {
+//             return res.status(404).json({ message: "User not found", success: false });
+//         }
+//         return res.status(200).json({ user, success: true });
+//     } catch (error) {
+//         return res.status(500).json({ message: error.message, success: false });
+//     }
+// }

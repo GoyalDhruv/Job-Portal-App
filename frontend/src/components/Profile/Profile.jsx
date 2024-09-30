@@ -8,12 +8,17 @@ import { Badge } from '../ui/badge'
 import { Label } from '../ui/label'
 import AppliedJobTable from './AppliedJobTable'
 import UpdateProfileModal from './UpdateProfileModal'
+import { useSelector } from 'react-redux'
 
 const skills = ['Html', 'CSS', 'JavaScript', 'ReactJS']
 
 function Profile() {
+
+    const user = useSelector(state => state.auth.user)
     const [openModal, setOpenModal] = useState(false)
     const [isResume, setIsResume] = useState(true)
+
+    console.log(user)
 
     return (
         <>
@@ -25,8 +30,8 @@ function Profile() {
                             <AvatarImage src='https://st3.depositphotos.com/43745012/44906/i/450/depositphotos_449066958-stock-photo-financial-accounting-logo-financial-logo.jpg' />
                         </Avatar>
                         <div>
-                            <h1 className='font-medium text-xl'>Name</h1>
-                            <p>Add your bio</p>
+                            <h1 className='font-medium text-xl'>{user?.fullName}</h1>
+                            <p>{user?.profile?.bio}</p>
                         </div>
                     </div>
                     <Button
@@ -39,17 +44,17 @@ function Profile() {
                 </div>
                 <div className='my-5'>
                     <div className='flex items-center gap-3 my-2'>
-                        <Mail /><span>user@gmail.com</span>
+                        <Mail /><span>{user?.email}</span>
                     </div>
                     <div className='flex items-center gap-3 my-2'>
-                        <Contact /><span>Phone Number</span>
+                        <Contact /><span>{user?.phoneNumber}</span>
                     </div>
                 </div>
                 <div className='my-5'>
                     <h1>Skills</h1>
                     <div className='flex items-center gap-1'>
                         {
-                            skills.length ? skills.map((item, index) => (
+                            user?.profile?.skills?.length ? user?.profile?.skills.map((item, index) => (
                                 <Badge key={index}>{item}</Badge>
                             ))
                                 : <span>NA</span>
@@ -69,7 +74,7 @@ function Profile() {
                 <h1 className='font-bold text-lg my-5'>Applied Jobs</h1>
                 <AppliedJobTable />
             </div>
-            <UpdateProfileModal openModal={openModal} setOpenModal={setOpenModal} />
+            <UpdateProfileModal openModal={openModal} setOpenModal={setOpenModal} user={user} />
             <Footer />
         </>
     )

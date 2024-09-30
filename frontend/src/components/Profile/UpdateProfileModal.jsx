@@ -6,35 +6,77 @@ import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { Loader2 } from 'lucide-react';
+import axios from 'axios';
+import { toast } from 'sonner';
+import { USER_API_END_POINT } from '@/utils/constant';
+import { useDispatch } from 'react-redux';
+import { setUser } from '@/redux/authSlice';
 
-function UpdateProfileModal({ openModal, setOpenModal }) {
+function UpdateProfileModal({ openModal, setOpenModal, user }) {
 
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
-    const [bio, setBio] = useState('');
-    const [skills, setSkills] = useState('');
-    const [resume, setIsResume] = useState('');
+    const userskills = user?.profile?.skills.join(',')
+
+    const [fullName, setFullName] = useState(user?.fullName);
+    // const [email, setEmail] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState(user?.phoneNumber);
+    const [bio, setBio] = useState(user?.profile?.bio);
+    const [skills, setSkills] = useState(userskills);
+    // const [resume, setIsResume] = useState('');
     const [loading, setLoading] = useState(false);
+
+    const dispatch = useDispatch()
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const formData = {
+            fullName,
+            phoneNumber,
+            bio,
+            skills,
+            // resume
+        }
+        try {
+            setLoading(true)
+            const res = await axios.put(`${USER_API_END_POINT}/profile/update`, formData,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    withCredentials: true,
+                }
+            )
+            if (res.data.success) {
+                dispatch(setUser(res.data.user))
+                toast.success(res.data.message)
+                setOpenModal(false)
+            }
+        } catch (error) {
+            toast.error(error.response.data.message)
+            console.error(error)
+        }
+        finally {
+            setLoading(false)
+        }
+    }
 
     return (
         <Dialog open={openModal} onOpenChange={setOpenModal}>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>Update Profile</DialogTitle>
-                    <form>
+                    <form onSubmit={(e) => handleSubmit(e)}>
                         <div className='grid gap-4 py-4'>
                             <div className='grid grid-cols-4 items-center gap-4'>
-                                <Label htmlFor='name'>Name</Label>
+                                <Label htmlFor='fullName'>Full Name</Label>
                                 <Input
                                     type='text'
-                                    id='name'
+                                    id='fullName'
                                     className='col-span-3'
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
+                                    value={fullName}
+                                    onChange={(e) => setFullName(e.target.value)}
                                 />
                             </div>
-                            <div className='grid grid-cols-4 items-center gap-4'>
+                            {/* <div className='grid grid-cols-4 items-center gap-4'>
                                 <Label htmlFor='email'>Email</Label>
                                 <Input
                                     type='email'
@@ -43,7 +85,7 @@ function UpdateProfileModal({ openModal, setOpenModal }) {
                                     name={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                 />
-                            </div>
+                            </div> */}
                             <div className='grid grid-cols-4 items-center gap-4'>
                                 <Label htmlFor='phoneNumber'>Phone Number</Label>
                                 <Input
@@ -52,6 +94,7 @@ function UpdateProfileModal({ openModal, setOpenModal }) {
                                     className='col-span-3'
                                     name={phoneNumber}
                                     maxLength="10"
+                                    value={phoneNumber}
                                     pattern="^\d{10}$"
                                     onChange={(e) => setPhoneNumber(e.target.value)}
                                 />
@@ -63,6 +106,7 @@ function UpdateProfileModal({ openModal, setOpenModal }) {
                                     id='bio'
                                     className='col-span-3'
                                     name={bio}
+                                    value={bio}
                                     onChange={(e) => setBio(e.target.value)}
                                 />
                             </div>
@@ -73,10 +117,11 @@ function UpdateProfileModal({ openModal, setOpenModal }) {
                                     id='skills'
                                     className='col-span-3'
                                     name={skills}
+                                    value={skills}
                                     onChange={(e) => setSkills(e.target.value)}
                                 />
                             </div>
-                            <div className='grid grid-cols-4 items-center gap-4'>
+                            {/* <div className='grid grid-cols-4 items-center gap-4'>
                                 <Label htmlFor='resume'>Resume</Label>
                                 <Input
                                     type='file'
@@ -86,7 +131,7 @@ function UpdateProfileModal({ openModal, setOpenModal }) {
                                     className='col-span-3'
                                     name={resume}
                                 />
-                            </div>
+                            </div> */}
                         </div>
                         <DialogFooter>
                             {
@@ -104,9 +149,11 @@ function UpdateProfileModal({ openModal, setOpenModal }) {
         </Dialog>
     )
 }
+
 UpdateProfileModal.propTypes = {
     openModal: PropTypes.bool.isRequired,
     setOpenModal: PropTypes.func.isRequired,
+    user: PropTypes.object,
 };
 
 export default UpdateProfileModal
