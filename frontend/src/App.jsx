@@ -9,6 +9,8 @@ const Login = lazy(() => import('./components/auth/Login'));
 const Signup = lazy(() => import('./components/auth/Signup'));
 const Jobs = lazy(() => import('./components/Jobs/Jobs'));
 const Browse = lazy(() => import('./components/Browse/Browse'));
+const Profile = lazy(() => import('./components/Profile/Profile'));
+const Description = lazy(() => import('./components/Jobs/JobDescription'));
 
 const LazyRoute = ({ element }) => (
   <Suspense fallback={
@@ -28,7 +30,9 @@ function App() {
         <Route path="/login" element={<LazyRoute element={<Login />} />} />
         <Route path="/signup" element={<LazyRoute element={<Signup />} />} />
         <Route path="/jobs" element={<LazyRoute element={<Jobs />} />} />
+        <Route path="/jobs/description/:id" element={<LazyRoute element={<Description />} />} />
         <Route path="/browse" element={<LazyRoute element={<Browse />} />} />
+        <Route path="/profile" element={<LazyRoute element={<Profile />} />} />
       </Routes>
     </Router>
   );

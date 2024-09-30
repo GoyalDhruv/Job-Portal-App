@@ -11,9 +11,10 @@ import {
 } from "@/components/ui/avatar"
 import { Button } from '../ui/button'
 import { LogOut, User2 } from 'lucide-react'
+import { useSelector } from 'react-redux'
 
 function Navbar() {
-    const user = false
+    const user = useSelector(state => state.auth.user)
 
     return (
         <div className='bg-white'>
@@ -55,7 +56,9 @@ function Navbar() {
                                         <div className='flex w-fit items-center gap-2 cursor-pointer'>
                                             <User2 />
                                             <Button variant='link'>
-                                                View Profile
+                                                <Link to='profile'>
+                                                    View Profile
+                                                </Link>
                                             </Button>
                                         </div>
                                         <div className='flex w-fit items-center gap-2 cursor-pointer'>
