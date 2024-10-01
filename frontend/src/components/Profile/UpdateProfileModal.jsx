@@ -14,12 +14,13 @@ import { setUser } from '@/redux/authSlice';
 
 function UpdateProfileModal({ openModal, setOpenModal, user, updateProfile }) {
 
-    const userskills = user?.profile?.skills.join(',')
 
     const [fullName, setFullName] = useState(user?.fullName);
     // const [email, setEmail] = useState('');
     const [phoneNumber, setPhoneNumber] = useState(user?.phoneNumber);
     const [bio, setBio] = useState(user?.profile?.bio);
+    
+    const userskills = user?.profile?.skills.join(',')
     const [skills, setSkills] = useState(userskills);
     // const [resume, setIsResume] = useState('');
     const [loading, setLoading] = useState(false);
