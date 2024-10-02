@@ -12,10 +12,9 @@ import {
 import { Button } from '../ui/button'
 import { LogOut, User2 } from 'lucide-react'
 import { useDispatch, useSelector } from 'react-redux'
-import axios from 'axios'
-import { USER_API_END_POINT } from '@/utils/constant'
 import { clearUser, setLoading } from '@/redux/authSlice'
 import { toast } from 'sonner'
+import { logoutUser } from '@/utils/userApiService'
 
 function Navbar() {
     const user = useSelector(state => state.auth.user);
@@ -26,17 +25,15 @@ function Navbar() {
         try {
             dispatch(setLoading(true));
 
-            const res = await axios.post(`${USER_API_END_POINT}/logout`, {}, {
-                withCredentials: true,
-            });
-
+            const res = await logoutUser()
             if (res.data.success) {
                 dispatch(clearUser());
                 navigate('/');
                 toast.success(res.data.message);
             }
         } catch (error) {
-            toast.error(error.response?.data?.message || "Logout failed. Please try again.");
+            if (error.response && error.response.status !== 401)
+                toast.error(error.response?.data?.message || "Logout failed. Please try again.");
             console.error(error);
         } finally {
             dispatch(setLoading(false));
@@ -63,20 +60,22 @@ function Navbar() {
                                 <PopoverTrigger asChild>
                                     <Avatar>
                                         <AvatarImage
-                                            src="https://github.com/shadcn.png"
-                                            alt="@shadcn" className='cursor-pointer' />
+                                            src={user?.profile?.profilePhoto || "https://github.com/shadcn.png"}
+                                            alt={user ? `${user.fullName}'s profile picture` : 'Default profile'}
+                                            className='cursor-pointer' />
                                     </Avatar>
                                 </PopoverTrigger>
                                 <PopoverContent className="w-80">
                                     <div className='flex gap-4 space-y-2'>
                                         <Avatar>
                                             <AvatarImage
-                                                src="https://github.com/shadcn.png"
-                                                alt="@shadcn" className='cursor-pointer' />
+                                                src={user?.profile?.profilePhoto || "https://github.com/shadcn.png"}
+                                                alt={user ? `${user.fullName}'s profile picture` : 'Default profile'}
+                                            />
                                         </Avatar>
                                         <div>
-                                            <h4 className='font-medium'>User</h4>
-                                            <p className='text-sm text-muted-foreground'>Lorem ipsum dolor sit amet.</p>
+                                            <h4 className='font-medium'>{user?.fullName}</h4>
+                                            <p className='text-sm text-muted-foreground'>{user?.profile?.bio}</p>
                                         </div>
                                     </div>
                                     <div className='flex flex-col my-2 text-gray-600'>

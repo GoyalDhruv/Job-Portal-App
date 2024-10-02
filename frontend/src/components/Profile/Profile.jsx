@@ -18,7 +18,6 @@ function Profile() {
     const [isResume, setIsResume] = useState(true)
     const [updateProfile, setUpdateProfile] = useState(false)
 
-    console.log(user)
 
     return (
         <>

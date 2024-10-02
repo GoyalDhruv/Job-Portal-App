@@ -6,11 +6,10 @@ import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { Loader2 } from 'lucide-react';
-import axios from 'axios';
 import { toast } from 'sonner';
-import { USER_API_END_POINT } from '@/utils/constant';
 import { useDispatch } from 'react-redux';
 import { setUser } from '@/redux/authSlice';
+import { changePassword, updateUser } from '@/utils/userApiService';
 
 function UpdateProfileModal({ openModal, setOpenModal, user, updateProfile }) {
 
@@ -19,10 +18,10 @@ function UpdateProfileModal({ openModal, setOpenModal, user, updateProfile }) {
     // const [email, setEmail] = useState('');
     const [phoneNumber, setPhoneNumber] = useState(user?.phoneNumber);
     const [bio, setBio] = useState(user?.profile?.bio);
-    
+
     const userskills = user?.profile?.skills.join(',')
     const [skills, setSkills] = useState(userskills);
-    // const [resume, setIsResume] = useState('');
+    const [resume, setIsResume] = useState('');
     const [loading, setLoading] = useState(false);
 
     const [currentPassword, setCurrentPassword] = useState('');
@@ -34,30 +33,25 @@ function UpdateProfileModal({ openModal, setOpenModal, user, updateProfile }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (updateProfile) {
-            const formData = {
-                fullName,
-                phoneNumber,
-                bio,
-                skills,
-                // resume
+            const formData = new FormData();
+            formData.append('fullName', fullName);
+            formData.append('phoneNumber', phoneNumber);
+            formData.append('bio', bio);
+            formData.append('skills', skills);
+            if (resume) {
+                formData.append('file', resume);
             }
             try {
                 setLoading(true)
-                const res = await axios.put(`${USER_API_END_POINT}/profile/update`, formData,
-                    {
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        withCredentials: true,
-                    }
-                )
+                const res = await updateUser(formData)
                 if (res.data.success) {
                     dispatch(setUser(res.data.user))
                     toast.success(res.data.message)
                     setOpenModal(false)
                 }
             } catch (error) {
-                toast.error(error.response.data.message)
+                if (error.response && error.response.status !== 401)
+                    toast.error(error.response.data.message)
                 console.error(error)
             }
             finally {
@@ -72,21 +66,15 @@ function UpdateProfileModal({ openModal, setOpenModal, user, updateProfile }) {
             }
             try {
                 setLoading(true)
-                const res = await axios.post(`${USER_API_END_POINT}/changePassword`, formData,
-                    {
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        withCredentials: true,
-                    }
-                )
+                const res = await changePassword(formData)
                 if (res.data.success) {
                     dispatch(setUser(res.data.user))
                     toast.success(res.data.message)
                     setOpenModal(false)
                 }
             } catch (error) {
-                toast.error(error.response.data.message)
+                if (error.response && error.response.status !== 401)
+                    toast.error(error.response.data.message)
                 console.error(error)
             }
             finally {
@@ -160,7 +148,7 @@ function UpdateProfileModal({ openModal, setOpenModal, user, updateProfile }) {
                                                 onChange={(e) => setSkills(e.target.value)}
                                             />
                                         </div>
-                                        {/* <div className='grid grid-cols-4 items-center gap-4'>
+                                        <div className='grid grid-cols-4 items-center gap-4'>
                                             <Label htmlFor='resume'>Resume</Label>
                                             <Input
                                                 type='file'
@@ -170,7 +158,7 @@ function UpdateProfileModal({ openModal, setOpenModal, user, updateProfile }) {
                                                 className='col-span-3'
                                                 name={resume}
                                             />
-                                        </div> */}
+                                        </div>
                                     </>
                                     :
                                     <>
