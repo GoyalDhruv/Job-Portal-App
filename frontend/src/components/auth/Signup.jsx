@@ -21,7 +21,7 @@ function Signup() {
     const [profilePhoto, setProfilePhoto] = useState('')
 
     const navigate = useNavigate()
-    const { loading } = useSelector(store => store.auth)
+    const { loading } = useSelector(state => state.auth)
     const dispatch = useDispatch()
 
     const handleSubmit = async (e) => {
@@ -56,7 +56,7 @@ function Signup() {
     return (
         <>
             <Navbar />
-            <div className='flex items-center justify-center max-w-7xl mx-auto'>
+            <div className='flex items-center justify-center max-w-7xl mx-auto '>
                 <form onSubmit={handleSubmit} className='w-1/2 border border-gray-200 rounded-md p-4 my-10'>
                     <h1 className='font-bold text-xl mb-5'>Sign up</h1>
                     <div className='my-2'>

@@ -1,4 +1,4 @@
-import api from './api'; // Import your custom axios instance
+import api from './api';
 import { USER_API_END_POINT } from './constant';
 
 export const registerUser = async (formData) => {

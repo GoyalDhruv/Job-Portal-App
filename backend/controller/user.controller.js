@@ -21,8 +21,6 @@ export const register = async (req, res) => {
 
                 if (cloudResponse) {
                     profilePhoto = cloudResponse.secure_url
-
-                    console.log(profilePhoto);
                 }
             } catch (error) {
                 console.error('Cloudinary upload error:', error);
@@ -141,7 +139,6 @@ export const UpdateProfile = async (req, res) => {
                 const cloudResponse = await cloudinary.uploader.upload(fileUri.content, {
                     resource_type: 'raw'
                 });
-                console.log('Cloudinary Response:', cloudResponse);
                 if (cloudResponse) {
                     user.profile.resume = cloudResponse.secure_url;
                     user.profile.resumeOriginalName = file.originalname;
