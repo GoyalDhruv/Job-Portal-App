@@ -13,12 +13,15 @@ api.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response && error.response.status === 401) {
-            toast.error('Session has expired. Please log in again.');
-            setTimeout(() => {
-                window.location.href = '/';
-                localStorage.removeItem('user');
-                store.dispatch(clearUser());
-            }, 1000);
+            const currentPath = window.location.pathname;
+            if (currentPath !== '/') {
+                toast.error('Session has expired. Please log in again.');
+                setTimeout(() => {
+                    window.location.href = '/';
+                    localStorage.removeItem('user');
+                    store.dispatch(clearUser());
+                }, 1000);
+            }
         }
         return Promise.reject(error);
     }
