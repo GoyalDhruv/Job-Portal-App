@@ -2,13 +2,25 @@ import React from 'react'
 import { Badge } from '../ui/badge'
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { toast } from 'sonner';
 
 function LatestJobCard({ id, job }) {
     const navigate = useNavigate()
+    const user = useSelector(state => state.auth.user)
+
+    const handleClick = () => {
+        if (user) {
+            navigate(`/jobs/description/${id}`);
+        } else {
+            toast.error('Please log in to view job details.');
+            navigate(`/login`);
+        }
+    };
 
     return (
         <div className='p-5 rounded-md shadow-lg bg-white border-gray-100 cursor-pointer hover:shadow-xl'
-            onClick={() => navigate(`/jobs/description/${id}`)}
+            onClick={handleClick}
         >
             <div>
                 <h1 className='font-medium text-lg'>{job?.company?.name}</h1>
