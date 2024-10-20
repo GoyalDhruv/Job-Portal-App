@@ -8,8 +8,8 @@ function LatestJobs() {
   const jobs = useSelector(state => state.job.allJobs)
 
   return (
-    <div className='max-w-7xl mx-auto my-20 '>
-      <h1 className='text-4xl font-bold'>
+    <div className='max-w-7xl mx-auto my-20'>
+      <h1 className='text-4xl font-bold pb-3'>
         <span className="text-[#F83002]">Latest & Top </span>
         Job Openings
       </h1>

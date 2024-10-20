@@ -20,9 +20,18 @@ export const applyJob = async (req, res) => {
             return res.status(404).json({ message: 'Job not found', success: false });
         }
 
+        if (job.position <= 0) {
+            return res.status(400).json({ message: 'No positions available', success: false });
+        }
+
         const newApplication = await Application.create({
             job: jobId,
             applicant: userId
+        });
+
+        await Job.findByIdAndUpdate(jobId, {
+            $addToSet: { application: newApplication._id },
+            $inc: { position: -1 }
         });
 
         job.application = job.application || [];
@@ -63,15 +72,18 @@ export const getAppliedJobs = async (req, res) => {
 export const getApplicants = async (req, res) => {
     try {
         const jobId = req.params.id;
-        const job = await Job.findById(jobId)
+        let job = await Job.findById(jobId)
             .populate({
                 path: 'application',
                 options: { sort: { createdAt: -1 } },
                 populate: {
                     path: 'applicant',
+                    select: "_id",
                     options: { sort: { createdAt: -1 } },
                 }
             })
+        job = job.application.filter(item => item.job)
+
         if (!job) {
             return res.status(404).json({ message: 'Job not found', success: false });
         }
