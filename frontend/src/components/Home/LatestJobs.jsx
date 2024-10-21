@@ -1,14 +1,15 @@
 import React from 'react';
 import LatestJobCard from './LatestJobCard';
-import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
+// import { useSelector } from 'react-redux';
 
 // const randomJobs = [1, 2, 3, 4, 5, 6, 7, 8];
-function LatestJobs() {
+function LatestJobs({ jobs }) {
 
-  const jobs = useSelector(state => state.job.allJobs)
+  // const jobs = useSelector(state => state.job.allJobs)
 
   return (
-    <div className='max-w-7xl mx-auto my-20'>
+    <div className='max-w-7xl mx-auto my-20 min-h-screen'>
       <h1 className='text-4xl font-bold pb-3'>
         <span className="text-[#F83002]">Latest & Top </span>
         Job Openings
@@ -24,6 +25,9 @@ function LatestJobs() {
       </div>
     </div>
   );
+}
+LatestJobs.propTypes = {
+  jobs: PropTypes.array
 }
 
 export default LatestJobs;

@@ -56,7 +56,7 @@ function JobDescription() {
             if (res.data.success) {
                 toast.success(res.data.message);
                 setApplicants(prev => [...prev, userId]);
-                setJobDescription(prev => ({ ...prev, position: prev.position - 1 }));
+                setJobDescription(prev => ({ ...prev, position: prev.position + 1 }));
             }
         } catch (error) {
             toast.error(error.response?.data?.message || 'Error applying for job');
@@ -67,10 +67,12 @@ function JobDescription() {
     return (
         <>
             <Navbar />
-            {loading ? <div className='flex justify-center items-center h-screen'>
-                <RotateLoader color='#F83002' />
-            </div> :
-                <div className='max-w-7xl mx-auto my-10'>
+            {loading ?
+                <div className='flex justify-center items-center h-screen'>
+                    <RotateLoader color='#F83002' />
+                </div>
+                :
+                <div className='max-w-7xl mx-auto my-10 min-h-screen'>
                     <div className='flex items-center justify-between'>
                         <div>
                             <h1 className='font-bold text-xl'>{jobDescription?.title}</h1>

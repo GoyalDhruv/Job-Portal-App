@@ -31,7 +31,7 @@ export const applyJob = async (req, res) => {
 
         await Job.findByIdAndUpdate(jobId, {
             $addToSet: { application: newApplication._id },
-            $inc: { position: -1 }
+            $inc: { position: 1 }
         });
 
         job.application = job.application || [];

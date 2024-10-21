@@ -39,7 +39,7 @@ function Job({ job }) {
     return (
         <div className='p-5 rounded-md shadow-lg bg-white border-gray-100 hover:shadow-xl'>
             <div className='flex items-center justify-between'>
-                <p className='text-sm text-gray-500'>{job?.updatedAt ? PostedDate(job?.updatedAt) : ""}</p>
+                <p className='text-sm text-gray-500'>{job?.createdAt ? PostedDate(job?.createdAt) : ""}</p>
                 <Button variant='outline' className="rounded-full" size='icon'><Bookmark /></Button>
             </div>
             <div className='flex items-center gap-2 my-2'>
