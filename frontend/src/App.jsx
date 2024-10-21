@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import PropTypes from 'prop-types';
 import { RotateLoader } from 'react-spinners';
+import ProtectedRoute from './components/ProtectedRoute';
 
 const Home = lazy(() => import('./components/Home/Home'));
 const Login = lazy(() => import('./components/auth/Login'));
@@ -30,9 +31,18 @@ function App() {
         <Route path="/login" element={<LazyRoute element={<Login />} />} />
         <Route path="/signup" element={<LazyRoute element={<Signup />} />} />
         <Route path="/jobs" element={<LazyRoute element={<Jobs />} />} />
-        <Route path="/jobs/description/:id" element={<LazyRoute element={<Description />} />} />
         <Route path="/browse" element={<LazyRoute element={<Browse />} />} />
-        <Route path="/profile" element={<LazyRoute element={<Profile />} />} />
+        <Route path="/jobs/description/:id" element={
+          <ProtectedRoute>
+            <LazyRoute element={<Description />} />
+          </ProtectedRoute>}
+        />
+
+        <Route path="/profile" element={
+          <ProtectedRoute>
+            <LazyRoute element={<Profile />} />
+          </ProtectedRoute>
+        } />
       </Routes>
     </Router>
   );
@@ -41,4 +51,5 @@ function App() {
 LazyRoute.propTypes = {
   element: PropTypes.node.isRequired,
 };
+
 export default App;

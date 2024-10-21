@@ -5,11 +5,11 @@ import { Input } from '../ui/input'
 import { RadioGroup } from '../ui/radio-group'
 import { Button } from '../ui/button'
 import { Link, useNavigate } from 'react-router-dom'
-import axios from 'axios'
-import { USER_API_END_POINT } from '@/utils/constant'
 import { toast } from 'sonner'
 import { useDispatch, useSelector } from 'react-redux'
 import { setLoading } from '@/redux/authSlice'
+import { Loader2 } from 'lucide-react'
+import { registerUser } from '@/utils/userApiService'
 
 function Signup() {
 
@@ -21,28 +21,24 @@ function Signup() {
     const [profilePhoto, setProfilePhoto] = useState('')
 
     const navigate = useNavigate()
-    const { loading } = useSelector(store => store.auth)
+    const { loading } = useSelector(state => state.auth)
     const dispatch = useDispatch()
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const formData = {
-            fullName,
-            email,
-            phoneNumber,
-            password,
-            role,
-            profilePhoto
-        }
+        const formData = new FormData();
+        formData.append('fullName', fullName);
+        formData.append('email', email);
+        formData.append('phoneNumber', phoneNumber);
+        formData.append('password', password);
+        formData.append('role', role);
+        formData.append('file', profilePhoto);
+
         try {
             dispatch(setLoading(true))
-            const res = await axios.post(`${USER_API_END_POINT}/register`, formData,
-                {
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    withCredentials: true,
-                })
+
+            const res = await registerUser(formData)
+
             if (res.data.success) {
                 toast.success(res.data.message)
                 navigate('/login')

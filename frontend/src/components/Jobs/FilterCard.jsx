@@ -20,21 +20,23 @@ function FilterCard() {
         <div className='w-full bg-white p-3 rounded-md'>
             <h1 className='font-bold text-lg'>Filter Jobs</h1>
             <hr className='mt-3' />
-            <RadioGroup>
+            <>
                 {filterData.map((item, index) => (
                     <div key={index}>
-                        <h1 className='font-bold text-lg'>{item.filterType}</h1>
-                        {
-                            item.array.map((i, index) => (
-                                <div key={index} className='flex item-center space-x-2 my-2'>
-                                    <RadioGroupItem value={i} />
-                                    <Label>{i}</Label>
-                                </div>
-                            ))
-                        }
+                        <h1 className='font-bold text-lg my-2'>{item.filterType}</h1>
+                        <RadioGroup>
+                            {
+                                item.array.map((i, index) => (
+                                    <div key={index} className='flex item-center space-x-2'>
+                                        <RadioGroupItem value={i} />
+                                        <Label>{i}</Label>
+                                    </div>
+                                ))
+                            }
+                        </RadioGroup>
                     </div>
                 ))}
-            </RadioGroup>
+            </>
         </div>
     )
 }
