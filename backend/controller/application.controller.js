@@ -78,7 +78,7 @@ export const getApplicants = async (req, res) => {
                 options: { sort: { createdAt: -1 } },
                 populate: {
                     path: 'applicant',
-                    select: "_id",
+                    select: "profile fullName email phoneNumber",
                     options: { sort: { createdAt: -1 } },
                 }
             })
