@@ -9,7 +9,7 @@ import { toast } from 'sonner'
 import { useDispatch, useSelector } from 'react-redux'
 import { setLoading, setUser } from '@/redux/authSlice'
 import { Loader2 } from 'lucide-react'
-import { loginUser } from '@/utils/userApiService'
+import { loginUser } from '@/utils/UserApiService'
 
 function Login() {
 

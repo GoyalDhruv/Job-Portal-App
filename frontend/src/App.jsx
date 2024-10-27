@@ -6,6 +6,7 @@ import { RotateLoader } from 'react-spinners';
 import ProtectedRoute from './components/ProtectedRoute';
 import Companies from './components/admin/Companies';
 import PageNotFound from './components/pageNotFound/PageNotFound';
+import AddCompany from './components/admin/AddCompany';
 
 const Home = lazy(() => import('./components/Home/Home'));
 const Login = lazy(() => import('./components/auth/Login'));
@@ -49,6 +50,20 @@ function App() {
         <Route path='/admin/companies' element={
           <ProtectedRoute allowedRoles={['Recruiter']}>
             <LazyRoute element={<Companies />} />
+          </ProtectedRoute>
+        }
+        />
+
+        <Route path='/admin/company/add' element={
+          <ProtectedRoute allowedRoles={['Recruiter']}>
+            <LazyRoute element={<AddCompany />} />
+          </ProtectedRoute>
+        }
+        />
+
+        <Route path='/admin/company/edit/:id' element={
+          <ProtectedRoute allowedRoles={['Recruiter']}>
+            <LazyRoute element={<AddCompany />} />
           </ProtectedRoute>
         }
         />

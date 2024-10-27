@@ -9,7 +9,7 @@ import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useDispatch } from 'react-redux';
 import { setUser } from '@/redux/authSlice';
-import { changePassword, updateUser } from '@/utils/userApiService';
+import { changePassword, updateUser } from '@/utils/UserApiService';
 
 function UpdateProfileModal({ openModal, setOpenModal, user, updateProfile }) {
 

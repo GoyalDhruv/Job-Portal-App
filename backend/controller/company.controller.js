@@ -2,18 +2,18 @@ import { Company } from '../model/company.model.js'
 
 export const registerCompany = async (req, res) => {
     try {
-        const { companyName } = req.body;
-        if (!companyName) {
+        const { name } = req.body;
+        if (!name) {
             return res.status(400).json({ message: "Company name is required.", success: false })
         }
 
-        let company = await Company.findOne({ name: companyName })
+        let company = await Company.findOne({ name })
         if (company) {
             return res.status(400).json({ message: "Company name already exists.", success: false })
         }
 
         company = await Company.create({
-            name: companyName,
+            name,
             userId: req.id
         })
 
@@ -70,11 +70,17 @@ export const updateCompany = async (req, res) => {
 
         const updateDate = { name, description, website, location }
 
+        let checkExitingCompany = await Company.findOne({ name })
+        if (checkExitingCompany) {
+            return res.status(400).json({ message: "Company name already exists.", success: false })
+        }
+
         const company = await Company.findByIdAndUpdate(companyId, updateDate, { new: true })
 
         if (!company) {
             return res.status(404).json({ message: 'Company not found', success: false });
         }
+
 
         return res.status(200).json({
             message: 'Company updated successfully',

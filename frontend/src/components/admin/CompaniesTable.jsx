@@ -5,8 +5,18 @@ import { AvatarImage } from '../ui/avatar'
 import { Popover, PopoverContent } from '../ui/popover'
 import { Edit2, MoreHorizontal } from 'lucide-react'
 import { PopoverTrigger } from '@radix-ui/react-popover'
+import PropTypes from 'prop-types'
+import { format } from 'date-fns'
+import { useNavigate } from 'react-router-dom'
 
-function CompaniesTable() {
+function CompaniesTable({ companies }) {
+
+    const navigate = useNavigate()
+    function formatDate(string) {
+        const date = new Date(string);
+        return format(date, 'MMMM do, yyyy')
+    }
+
     return (
         <Table>
             <TableCaption>A list of your recent registered companies</TableCaption>
@@ -19,22 +29,24 @@ function CompaniesTable() {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {[1, 2, 3, 4].map((item, index) => (
+                {companies?.map((item, index) => (
                     <TableRow key={index}>
                         <TableCell>
                             <Avatar>
                                 <AvatarImage />
                             </Avatar>
                         </TableCell>
-                        <TableCell>Company Name</TableCell>
-                        <TableCell>Date</TableCell>
+                        <TableCell>{item?.name}</TableCell>
+                        <TableCell>{formatDate(item?.createdAt)}</TableCell>
                         <TableCell className='text-right'>
                             <Popover>
                                 <PopoverTrigger>
                                     <MoreHorizontal />
                                 </PopoverTrigger>
                                 <PopoverContent className="w-32">
-                                    <div className='flex gap-2 justify-center items-center w-fit'>
+                                    <div className='flex gap-2 justify-center items-center w-fit cursor-pointer'
+                                        onClick={() => navigate(`/admin/company/edit/${item?._id}`)}
+                                    >
                                         <Edit2 className='w-4' />
                                         <span>Edit</span>
                                     </div>
@@ -46,6 +58,10 @@ function CompaniesTable() {
             </TableBody>
         </Table>
     )
+}
+
+CompaniesTable.propTypes = {
+    companies: PropTypes.arrayOf(PropTypes.object),
 }
 
 export default CompaniesTable
