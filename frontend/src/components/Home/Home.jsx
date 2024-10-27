@@ -9,7 +9,6 @@ import { getAllJobs } from '@/utils/JobApiService'
 // import { setAllJobs } from '@/redux/jobSlice'
 
 function Home() {
-
     // const dispatch = useDispatch()
     const [allJobs, setAllJobs] = useState()
 
@@ -25,9 +24,7 @@ function Home() {
                 console.error(error)
             }
         }
-
         getJob();
-
     }, [])
 
     return (

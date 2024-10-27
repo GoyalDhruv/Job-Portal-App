@@ -34,7 +34,11 @@ function Login() {
             if (res.data.success) {
                 dispatch(setUser(res.data.user))
                 toast.success(res.data.message)
-                navigate('/')
+                if (res.data.user.role === "Recruiter") {
+                    navigate('/admin/companies');
+                } else {
+                    navigate('/');
+                }
             }
         } catch (error) {
             toast.error(error.response.data.message)

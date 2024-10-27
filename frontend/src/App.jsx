@@ -4,6 +4,8 @@ import './App.css';
 import PropTypes from 'prop-types';
 import { RotateLoader } from 'react-spinners';
 import ProtectedRoute from './components/ProtectedRoute';
+import Companies from './components/admin/Companies';
+import PageNotFound from './components/pageNotFound/PageNotFound';
 
 const Home = lazy(() => import('./components/Home/Home'));
 const Login = lazy(() => import('./components/auth/Login'));
@@ -37,12 +39,21 @@ function App() {
             <LazyRoute element={<Description />} />
           </ProtectedRoute>}
         />
-
         <Route path="/profile" element={
           <ProtectedRoute>
             <LazyRoute element={<Profile />} />
           </ProtectedRoute>
         } />
+
+        {/* Admin */}
+        <Route path='/admin/companies' element={
+          <ProtectedRoute allowedRoles={['Recruiter']}>
+            <LazyRoute element={<Companies />} />
+          </ProtectedRoute>
+        }
+        />
+
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
     </Router>
   );
