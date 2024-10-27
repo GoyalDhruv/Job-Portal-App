@@ -9,7 +9,7 @@ router.route('/register').post(singleUpload, register)
 router.route('/login').post(login)
 // router.route('/profile').get(isAuthenticated, getProfile)
 router.route('/profile/update').put(isAuthenticated, singleUpload, UpdateProfile)
-router.route('/logout').post(isAuthenticated, logout)
+router.route('/logout').post(logout)
 router.route('/changePassword').post(isAuthenticated, changePassword)
 
 export default router;

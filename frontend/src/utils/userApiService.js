@@ -22,9 +22,11 @@ export const loginUser = async (formData) => {
 }
 
 export const logoutUser = async () => {
-    const res = await api.post(`${USER_API_END_POINT}/logout`, {}, {
-        withCredentials: true,
-    });
+    const res = await api.post(`${USER_API_END_POINT}/logout`, {},
+        {
+            withCredentials: true,
+        }
+    );
     return res;
 }
 
