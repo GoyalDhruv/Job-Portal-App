@@ -1,7 +1,7 @@
 import React from 'react'
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '../ui/table'
-import { Avatar } from '@radix-ui/react-avatar'
-import { AvatarImage } from '../ui/avatar'
+// import { Avatar } from '@radix-ui/react-avatar'
+// import { AvatarImage } from '../ui/avatar'
 import { Popover, PopoverContent } from '../ui/popover'
 import { Edit2, MoreHorizontal } from 'lucide-react'
 import { PopoverTrigger } from '@radix-ui/react-popover'
@@ -33,7 +33,7 @@ function CompaniesTable({ companies }) {
                 {companies?.map((item, index) => (
                     <TableRow key={index}>
                         <TableCell>
-                            <img src={item?.logo} className="w-10 h-10" />
+                            <img src={item?.logo} className="h-10 w-auto" />
                         </TableCell>
                         <TableCell>{item?.name}</TableCell>
                         <TableCell>{item?.location}</TableCell>

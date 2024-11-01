@@ -12,8 +12,8 @@ import { toast } from 'sonner'
 
 function JobDescription() {
     const { id } = useParams()
-    const user = localStorage.getItem('user')
-    const userId = JSON.parse(user)?.id;
+    const user = JSON.parse(localStorage.getItem('user'))
+    const userId = user?.id;
 
     const [jobDescription, setJobDescription] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -82,12 +82,14 @@ function JobDescription() {
                                 <Badge variant='ghost' className={'text-[#7209b7] font-bold'}>{jobDescription?.salary} LPA</Badge>
                             </div>
                         </div>
-                        <Button
-                            disabled={isApplied}
-                            onClick={apply}
-                            className={`rounded-lg ${isApplied ? 'bg-gray-600 cursor-not-allowed' : 'bg-[#F83002] hover:bg-[#df2900]'}`}>
-                            {!isApplied ? "Apply Now" : "Already Applied"}
-                        </Button>
+                        {user?.role !== 'Recruiter' &&
+                            <Button
+                                disabled={isApplied}
+                                onClick={apply}
+                                className={`rounded-lg ${isApplied ? 'bg-gray-600 cursor-not-allowed' : 'bg-[#F83002] hover:bg-[#df2900]'}`}>
+                                {!isApplied ? "Apply Now" : "Already Applied"}
+                            </Button>
+                        }
                     </div>
                     <h1 className='border-b-2 border-b-gray-300 font-medium py-4'>{jobDescription?.description}</h1>
                     <div className='my-4'>
@@ -99,7 +101,7 @@ function JobDescription() {
                         <h1 className='font-bold my-1'>Total Applicants: <span className='pl-1 font-normal text-gray-800'>{jobDescription?.position}</span></h1>
                         <h1 className='font-bold my-1'>Posted Date: <span className='pl-1 font-normal text-gray-800'>{formatDate(jobDescription?.createdAt)}</span></h1>
                     </div>
-                </div>
+                </div >
             }
             <Footer />
         </>

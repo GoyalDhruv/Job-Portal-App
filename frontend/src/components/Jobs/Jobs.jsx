@@ -50,7 +50,7 @@ function Jobs() {
                         {
                             jobs?.length > 0 ?
                                 <div className='flex-1 h-[88vh] overflow-y-auto pb-5'>
-                                    <div className='grid grid-cols-3 gap-4'>
+                                    <div className='grid lg:grid-cols-3 gap-4 md:grid-cols-2'>
                                         {jobs?.map((item, index) => (
                                             <div key={index}>
                                                 <Job job={item} />
