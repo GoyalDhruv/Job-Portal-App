@@ -1,8 +1,13 @@
 import { Company } from '../model/company.model.js'
+import getDataUri from "../utils/datauri.js";
+import cloudinary from "../utils/cloudinary.js";
+
 
 export const registerCompany = async (req, res) => {
     try {
-        const { name } = req.body;
+        const { name, description, location, website } = req.body;
+        const file = req.file
+        console.log(name, description, location, website, file)
         if (!name) {
             return res.status(400).json({ message: "Company name is required.", success: false })
         }
@@ -12,9 +17,30 @@ export const registerCompany = async (req, res) => {
             return res.status(400).json({ message: "Company name already exists.", success: false })
         }
 
+        let logo = null;
+
+        if (file) {
+            try {
+                const fileUri = getDataUri(file);
+                const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+
+                if (cloudResponse) {
+                    logo = cloudResponse.secure_url
+                }
+
+            } catch (error) {
+                console.error('Cloudinary upload error:', error);
+                return res.status(500).json({ message: 'Error uploading file' });
+            }
+        }
+
         company = await Company.create({
+            userId: req.id,
             name,
-            userId: req.id
+            description,
+            location,
+            website,
+            logo
         })
 
         return res.status(201).json({
@@ -68,12 +94,28 @@ export const updateCompany = async (req, res) => {
 
         // cloudinary
 
-        const updateDate = { name, description, website, location }
+        let logo = null;
+        if (file) {
+            try {
+                const fileUri = getDataUri(file);
+                const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
 
-        let checkExitingCompany = await Company.findOne({ name })
-        if (checkExitingCompany) {
-            return res.status(400).json({ message: "Company name already exists.", success: false })
+                if (cloudResponse) {
+                    logo = cloudResponse.secure_url
+                }
+
+            } catch (error) {
+                console.error('Cloudinary upload error:', error);
+                return res.status(500).json({ message: 'Error uploading file' });
+            }
         }
+
+        const updateDate = { name, description, website, location, logo }
+
+        // let checkExitingCompany = await Company.findOne({ name })
+        // if (checkExitingCompany) {
+        //     return res.status(400).json({ message: "Company name already exists.", success: false })
+        // }
 
         const company = await Company.findByIdAndUpdate(companyId, updateDate, { new: true })
 

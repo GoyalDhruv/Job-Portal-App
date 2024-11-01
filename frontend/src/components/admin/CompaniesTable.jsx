@@ -24,6 +24,7 @@ function CompaniesTable({ companies }) {
                 <TableRow>
                     <TableHead>Logo</TableHead>
                     <TableHead>Name</TableHead>
+                    <TableHead>Location</TableHead>
                     <TableHead>Date</TableHead>
                     <TableHead className='text-right'>Action</TableHead>
                 </TableRow>
@@ -32,11 +33,10 @@ function CompaniesTable({ companies }) {
                 {companies?.map((item, index) => (
                     <TableRow key={index}>
                         <TableCell>
-                            <Avatar>
-                                <AvatarImage />
-                            </Avatar>
+                            <img src={item?.logo} className="w-10 h-10" />
                         </TableCell>
                         <TableCell>{item?.name}</TableCell>
+                        <TableCell>{item?.location}</TableCell>
                         <TableCell>{formatDate(item?.createdAt)}</TableCell>
                         <TableCell className='text-right'>
                             <Popover>

@@ -2,7 +2,13 @@ import api from './api';
 import { COMPANY_API_END_POINT } from './constant';
 
 export const addCompany = async (data) => {
-    const res = await api.post(`${COMPANY_API_END_POINT}/register`, data);
+    const res = await api.post(`${COMPANY_API_END_POINT}/register`, data,
+        {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        }
+    );
     return res
 }
 
@@ -17,6 +23,12 @@ export const getCompanyById = async (id) => {
 }
 
 export const updateCompany = async (id, data) => {
-    const res = await api.put(`${COMPANY_API_END_POINT}/update/${id}`, data);
+    const res = await api.put(`${COMPANY_API_END_POINT}/update/${id}`, data,
+        {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        }
+    );
     return res;
 }
