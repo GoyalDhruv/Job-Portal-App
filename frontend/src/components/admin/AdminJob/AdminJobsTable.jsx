@@ -39,14 +39,15 @@ function AdminJobsTable({ jobs }) {
                                 <PopoverTrigger>
                                     <MoreHorizontal />
                                 </PopoverTrigger>
-                                <PopoverContent className="w-32">
-                                    <div className='flex gap-2 justify-center items-center w-fit cursor-pointer'
+                                <PopoverContent className="w-35">
+                                    <div className='flex gap-2 justify-center items-center w-fit cursor-pointer pb-1'
                                         onClick={() => navigate(`/admin/job/edit/${item?._id}`)}
                                     >
                                         <Edit2 className='w-4' />
                                         <span>Edit</span>
                                     </div>
-                                    <div className='flex gap-2 justify-center items-center w-fit cursor-pointer'
+                                    <div className='flex gap-2 justify-center items-center w-fit cursor-pointer
+                                    pt-1'
                                         onClick={() => navigate(`/admin/job/applicants/${item?._id}`)}
                                     >
                                         <Eye className='w-4' />

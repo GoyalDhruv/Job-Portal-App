@@ -1,20 +1,36 @@
 import React from 'react'
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '../../ui/table'
-// import { Avatar } from '@radix-ui/react-avatar'
-// import { AvatarImage } from '../ui/avatar'
 import { Popover, PopoverContent } from '../../ui/popover'
-import { Edit2, Eye, MoreHorizontal } from 'lucide-react'
+import { MoreHorizontal } from 'lucide-react'
 import { PopoverTrigger } from '@radix-ui/react-popover'
 import PropTypes from 'prop-types'
 import { format } from 'date-fns'
-import { useNavigate } from 'react-router-dom'
+import { toast } from 'sonner'
+import { updateStatus } from '@/utils/ApplicationApiService'
 
-function ApplicantsTable({ jobs }) {
+const ShortListing = {
+    Accepted: 'Accepted',
+    Rejected: 'Rejected'
+};
 
-    const navigate = useNavigate()
+function ApplicantsTable({ applicants }) {
+
     function formatDate(string) {
         const date = new Date(string);
         return format(date, 'MMMM do, yyyy')
+    }
+
+    async function handleStatus(status, id) {
+        const data = {
+            status
+        }
+        try {
+            const res = await updateStatus(id, data)
+            toast.success(res.data.message);
+        } catch (error) {
+            console.error('Submit Error:', error);
+            toast.error(error.response?.data?.message || 'Submission failed.');
+        }
     }
 
     return (
@@ -31,10 +47,16 @@ function ApplicantsTable({ jobs }) {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {jobs?.map((item, index) => (
+                {applicants?.map((item, index) => (
                     <TableRow key={index}>
-                        <TableCell>{item?.company?.name}</TableCell>
-                        <TableCell>{item?.title}</TableCell>
+                        <TableCell>{item?.applicant?.fullName}</TableCell>
+                        <TableCell>{item?.applicant?.email}</TableCell>
+                        <TableCell>{item?.applicant?.phoneNumber}</TableCell>
+                        <TableCell>{
+                            item?.applicant?.profile?.resume ?
+                                <a href={item?.applicant?.profile?.resume} className='text-blue-600' target='_blank'>{item?.applicant?.profile?.resumeOriginalName}</a> :
+                                <span>NA</span>
+                        }</TableCell>
                         <TableCell>{formatDate(item?.createdAt)}</TableCell>
                         <TableCell className='text-right'>
                             <Popover>
@@ -42,18 +64,9 @@ function ApplicantsTable({ jobs }) {
                                     <MoreHorizontal />
                                 </PopoverTrigger>
                                 <PopoverContent className="w-32">
-                                    <div className='flex gap-2 justify-center items-center w-fit cursor-pointer'
-                                        onClick={() => navigate(`/admin/job/edit/${item?._id}`)}
-                                    >
-                                        <Edit2 className='w-4' />
-                                        <span>Edit</span>
-                                    </div>
-                                    <div className='flex gap-2 justify-center items-center w-fit cursor-pointer'
-                                        onClick={() => navigate(`/admin/job/applicants/${item?._id}`)}
-                                    >
-                                        <Eye className='w-4' />
-                                        <span>Applicants</span>
-                                    </div>
+                                    {/* Example actions */}
+                                    <button className="w-full text-left pb-1" onClick={() => handleStatus('Accepted', item?._id)}>Accepted</button>
+                                    <button className="w-full text-left pt-1" onClick={() => handleStatus('Rejected', item?._id)}>Rejected</button>
                                 </PopoverContent>
                             </Popover>
                         </TableCell>
@@ -65,7 +78,7 @@ function ApplicantsTable({ jobs }) {
 }
 
 ApplicantsTable.propTypes = {
-    jobs: PropTypes.arrayOf(PropTypes.object),
+    applicants: PropTypes.arrayOf(PropTypes.object),
 }
 
 export default ApplicantsTable
