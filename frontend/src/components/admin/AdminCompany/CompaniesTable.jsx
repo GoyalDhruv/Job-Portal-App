@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom'
 function CompaniesTable({ companies }) {
 
     const navigate = useNavigate()
+
     function formatDate(string) {
         const date = new Date(string);
         return format(date, 'MMMM do, yyyy')

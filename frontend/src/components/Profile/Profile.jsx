@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Navbar from '../shared/Navbar'
 import Footer from '../shared/Footer'
 import { Avatar, AvatarImage } from '../ui/avatar'
@@ -9,6 +9,7 @@ import { Label } from '../ui/label'
 import AppliedJobTable from './AppliedJobTable'
 import UpdateProfileModal from './UpdateProfileModal'
 import { useSelector } from 'react-redux'
+import { getAppliedJobs } from '@/utils/ApplicationApiService'
 
 
 function Profile() {
@@ -17,7 +18,22 @@ function Profile() {
     const [openModal, setOpenModal] = useState(false)
     const [isResume, setIsResume] = useState(true)
     const [updateProfile, setUpdateProfile] = useState(false)
+    const [appliedJobs, setAppliedJobs] = useState([])
 
+    async function fetchAppliedJobs() {
+        try {
+            const res = await getAppliedJobs()
+            if (res.data.success) {
+                setAppliedJobs(res.data.applications)
+            }
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    useEffect(() => {
+        fetchAppliedJobs()
+    }, [])
 
     return (
         <>
@@ -86,7 +102,7 @@ function Profile() {
             </div>
             <div className='max-w-4xl mx-auto bg-white rounded-2xl my-5'>
                 <h1 className='font-bold text-lg my-5'>Applied Jobs</h1>
-                <AppliedJobTable />
+                <AppliedJobTable appliedJobs={appliedJobs} />
             </div>
             <UpdateProfileModal openModal={openModal} setOpenModal={setOpenModal} user={user} updateProfile={updateProfile} />
             <Footer />

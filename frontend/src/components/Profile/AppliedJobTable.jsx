@@ -1,8 +1,16 @@
 import React from 'react'
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '../ui/table'
 import { Badge } from '../ui/badge'
+import PropTypes from 'prop-types';
+import { format } from 'date-fns'
 
-function AppliedJobTable() {
+function AppliedJobTable({ appliedJobs }) {
+
+    function formatDate(string) {
+        const date = new Date(string);
+        return format(date, 'MMMM do, yyyy')
+    }
+
     return (
         <Table>
             <TableCaption>A list of your applied jobs</TableCaption>
@@ -15,17 +23,25 @@ function AppliedJobTable() {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {[1, 2, 3, 4].map((item, index) => (
-                    <TableRow key={index}>
-                        <TableCell>12/12/2022</TableCell>
-                        <TableCell>Software Engineer</TableCell>
-                        <TableCell>XYZ Corp</TableCell>
-                        <TableCell className='text-right'><Badge>Selected</Badge></TableCell>
-                    </TableRow>
-                ))}
+                {
+                    appliedJobs?.length < 1 ? <span>You haven't applied to any job yet.</span>
+                        :
+                        appliedJobs.map((item, index) => (
+                            <TableRow key={index}>
+                                <TableCell>{formatDate(item?.createdAt)}</TableCell>
+                                <TableCell>{item?.job?.title}</TableCell>
+                                <TableCell>{item?.job?.company?.name}</TableCell>
+                                <TableCell className='text-right'><Badge className={`${item?.status === 'Rejected' ? 'bg-red-400' : item?.status === 'Pending' ? 'bg-gray-400' : 'bg-green-400'}`}>{item?.status.toUpperCase()}</Badge></TableCell>
+                            </TableRow>
+                        ))
+                }
             </TableBody>
         </Table>
     )
+}
+
+AppliedJobTable.propTypes = {
+    appliedJobs: PropTypes.array.isRequired
 }
 
 export default AppliedJobTable

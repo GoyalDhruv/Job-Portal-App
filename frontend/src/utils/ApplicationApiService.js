@@ -15,3 +15,8 @@ export const updateStatus = async (jobId, data) => {
     const res = await api.put(`${APPLICATION_API_END_POINT}/status/${jobId}/update`, data);
     return res;
 }
+
+export const getAppliedJobs = async () => {
+    const res = await api.get(`${APPLICATION_API_END_POINT}/get`);
+    return res;
+}
