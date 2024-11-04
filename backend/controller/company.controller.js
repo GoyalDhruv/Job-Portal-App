@@ -7,7 +7,6 @@ export const registerCompany = async (req, res) => {
     try {
         const { name, description, location, website } = req.body;
         const file = req.file
-        console.log(name, description, location, website, file)
         if (!name) {
             return res.status(400).json({ message: "Company name is required.", success: false })
         }

@@ -73,7 +73,6 @@ function AddCompany() {
         }
     }
 
-    console.log(file)
     return (
         <>
             <Navbar />

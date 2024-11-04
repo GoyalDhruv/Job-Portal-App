@@ -1,8 +1,9 @@
 import api from './api';
 import { JOB_API_END_POINT } from './constant';
 
-export const getAllJobs = async () => {
-    const res = await api.get(`${JOB_API_END_POINT}/get`);
+export const getAllJobs = async (query) => {
+    const keyword = query ? query : ""
+    const res = await api.get(`${JOB_API_END_POINT}/get?keyword=${keyword}`);
     return res;
 };
 

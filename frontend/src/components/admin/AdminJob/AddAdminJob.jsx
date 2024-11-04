@@ -4,7 +4,7 @@ import { Label } from '../../ui/label';
 import { Input } from '../../ui/input';
 import { Button } from '../../ui/button';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getCompanies} from '@/utils/CompanyApiService';
+import { getCompanies } from '@/utils/CompanyApiService';
 import { toast } from 'sonner';
 import { RotateLoader } from 'react-spinners';
 import { ArrowLeft } from 'lucide-react';
@@ -32,7 +32,6 @@ function AddJob() {
         try {
             const res = await getCompanies();
             const companyData = res?.data?.companies || [];
-            console.log(companyData)
             setCompanies(companyData);
         } catch (error) {
             toast.error(error.response?.data?.message || 'Failed to load data.');

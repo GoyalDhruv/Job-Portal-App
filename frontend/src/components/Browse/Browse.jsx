@@ -4,13 +4,10 @@ import Footer from '../shared/Footer'
 import Job from '../Jobs/Job'
 import { getAllJobs } from '@/utils/JobApiService'
 import { RotateLoader } from 'react-spinners'
-// import { useSelector } from 'react-redux'
-
-// const randomJobs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 
 function Browse() {
+    const query = new URLSearchParams(location.search).get('search');
 
-    // const jobs = useSelector(state => state.job.allJobs)
 
     const [jobs, setJobs] = useState()
     const [loading, setLoading] = useState(true);
@@ -18,10 +15,9 @@ function Browse() {
         async function getJob() {
             setLoading(true);
             try {
-                const res = await getAllJobs();
+                const res = await getAllJobs(query);
                 if (res.data.success) {
                     setJobs(res.data.jobs)
-                    // dispatch(setAllJobs(res.data.jobs))
                 }
             } catch (error) {
                 console.error(error)
