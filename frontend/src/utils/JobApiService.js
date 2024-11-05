@@ -2,10 +2,21 @@ import api from './api';
 import { JOB_API_END_POINT } from './constant';
 
 export const getAllJobs = async (query) => {
-    const keyword = query ? query : ""
-    const res = await api.get(`${JOB_API_END_POINT}/get?keyword=${keyword}`);
+    const { location, industry, salary, search } = query;
+
+    const params = new URLSearchParams();
+    if (location) params.append("location", location);
+    if (industry) params.append("industry", industry);
+    if (salary) params.append("salary", salary);
+    if (search) params.append("search", search);
+
+    const url = `${JOB_API_END_POINT}/get?${params.toString()}`;
+    console.log(url); // This will log the full URL with query params for debugging
+
+    const res = await api.get(url);
     return res;
 };
+
 
 export const getJobById = async (jobId) => {
     const res = await api.get(`${JOB_API_END_POINT}/get/${jobId}`);

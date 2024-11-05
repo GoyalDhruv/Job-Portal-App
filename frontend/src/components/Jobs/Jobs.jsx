@@ -5,33 +5,45 @@ import Job from './Job'
 import Footer from '../shared/Footer'
 import { getAllJobs } from '@/utils/JobApiService'
 import { RotateLoader } from 'react-spinners'
-// import { useSelector } from 'react-redux'
+import { toast } from 'sonner'
 
 
 function Jobs() {
-    // const jobs = useSelector(state => state.job.allJobs)
+    const [filterData, setFilterData] = useState({})
 
-    const [jobs, setJobs] = useState()
+    const [jobs, setJobs] = useState([])
     const [loading, setLoading] = useState(true);
-    useEffect(() => {
-        async function getJob() {
-            setLoading(true);
-            try {
-                const res = await getAllJobs();
-                if (res.data.success) {
-                    setJobs(res.data.jobs)
-                    // dispatch(setAllJobs(res.data.jobs))
-                }
-            } catch (error) {
-                console.error(error)
-            } finally {
-                setLoading(false);
+    async function getJob() {
+        setLoading(true);
+        try {
+            const res = await getAllJobs(filterData);
+            if (res.data.success) {
+                setJobs(res.data.jobs)
             }
+        } catch (error) {
+            console.error(error)
+            setJobs([])
+            toast.error(error?.response?.data?.message)
+        } finally {
+            setLoading(false);
         }
+    }
 
+    useEffect(() => {
         getJob();
-
-    }, [])
+        const params = new URLSearchParams();
+        Object.entries(filterData).forEach(([key, value]) => {
+            if (value) params.append(key, value);
+        });
+        let newUrl = ''
+        if (params.size == 0) {
+            newUrl = `${window.location.pathname}`
+        }
+        else {
+            newUrl = `${window.location.pathname}?${params.toString()}`;
+        }
+        window.history.pushState({}, '', newUrl);
+    }, [filterData])
 
 
     return (
@@ -45,7 +57,7 @@ function Jobs() {
                 <div className='max-w-7xl mx-auto mt-5 min-h-screen'>
                     <div className='flex gap-5'>
                         <div className='w-[20%]'>
-                            <FilterCard />
+                            <FilterCard setFilterData={setFilterData} />
                         </div>
                         {
                             jobs?.length > 0 ?

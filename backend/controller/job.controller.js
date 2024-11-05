@@ -36,36 +36,91 @@ export const postJob = async (req, res) => {
 }
 
 
+// export const getJobs = async (req, res) => {
+//     try {
+//         const keyword = req.query.keyword || "";
+//         const query = {
+//             $or: [
+//                 { title: { $regex: keyword, $options: 'i' } },
+//                 { description: { $regex: keyword, $options: 'i' } }
+//             ]
+//         };
+
+//         const jobs = await Job.find(query).populate({
+//             path: 'company'
+//         }).sort({ createdAt: -1 });
+
+//         if (!jobs)
+//             return res.status(404).json({
+//                 message: "No jobs found.",
+//                 success: false
+//             });
+
+//         return res.status(200).json({
+//             message: "Jobs fetched successfully.",
+//             jobs,
+//             success: true
+//         });
+
+//     } catch (error) {
+//         return res.status(500).json({ message: error.message, success: false });
+//     }
+// }
+
 export const getJobs = async (req, res) => {
     try {
-        const keyword = req.query.keyword || "";
-        const query = {
-            $or: [
-                { title: { $regex: keyword, $options: 'i' } },
-                { description: { $regex: keyword, $options: 'i' } }
-            ]
-        };
+        const { location, industry, salary, search } = req.query;
 
-        const jobs = await Job.find(query).populate({
-            path: 'company'
-        }).sort({ createdAt: -1 });
+        let query = {};
 
-        if (!jobs)
+        if (location) {
+            query.location = location;
+        }
+
+        if (salary) {
+            query.salary = { $gte: parseInt(salary, 10) };
+        }
+
+        if (industry) {
+            query.$or = [
+                { title: { $regex: industry, $options: 'i' } },
+                { description: { $regex: industry, $options: 'i' } }
+            ];
+        }
+
+        if (search) {
+            query.$or = [
+                { title: { $regex: search, $options: 'i' } },
+                { description: { $regex: search, $options: 'i' } }
+            ];
+        }
+
+        const jobs = await Job.find(query)
+            .populate({
+                path: 'company',
+            })
+            .sort({ createdAt: -1 });
+
+
+        if (!jobs.length) {
+            const allJobs = await Job.find();
             return res.status(404).json({
                 message: "No jobs found.",
-                success: false
+                allJobs,
+                success: false,
             });
+        }
 
         return res.status(200).json({
             message: "Jobs fetched successfully.",
             jobs,
-            success: true
+            success: true,
         });
 
     } catch (error) {
         return res.status(500).json({ message: error.message, success: false });
     }
-}
+};
 
 
 export const getJobById = async (req, res) => {
