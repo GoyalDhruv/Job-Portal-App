@@ -8,7 +8,7 @@ import { RotateLoader } from 'react-spinners'
 function Browse() {
     const query = new URLSearchParams(location.search).get('search');
 
-    const [jobs, setJobs] = useState()
+    const [jobs, setJobs] = useState([])
     const [loading, setLoading] = useState(true);
 
     async function getJob() {
@@ -19,6 +19,7 @@ function Browse() {
                 setJobs(res.data.jobs)
             }
         } catch (error) {
+            setJobs([])
             console.error(error)
         } finally {
             setLoading(false);
