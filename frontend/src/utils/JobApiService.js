@@ -2,12 +2,11 @@ import api from './api';
 import { JOB_API_END_POINT } from './constant';
 
 export const getAllJobs = async (query) => {
-    const { location, industry, salary, search } = query;
+    const { location, industry, search } = query;
 
     const params = new URLSearchParams();
     if (location) params.append("location", location);
     if (industry) params.append("industry", industry);
-    if (salary) params.append("salary", salary);
     if (search) params.append("search", search);
 
     const url = `${JOB_API_END_POINT}/get?${params.toString()}`;

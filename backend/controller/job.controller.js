@@ -69,7 +69,7 @@ export const postJob = async (req, res) => {
 
 export const getJobs = async (req, res) => {
     try {
-        const { location, industry, salary, search } = req.query;
+        const { location, industry, search } = req.query;
 
         let query = {};
 
@@ -77,9 +77,6 @@ export const getJobs = async (req, res) => {
             query.location = location;
         }
 
-        if (salary) {
-            query.salary = { $gte: parseInt(salary, 10) };
-        }
 
         if (industry) {
             query.$or = [

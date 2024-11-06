@@ -13,10 +13,6 @@ const data = [
     {
         filterType: 'Industry',
         array: ['Frontend Developer', 'Backend Developer', 'Full Stack Developer']
-    },
-    {
-        filterType: 'Salary',
-        array: ['0 to 40k', '40k to 1lakh', '1lakh to 5lakh']
     }
 ];
 
@@ -44,7 +40,7 @@ function FilterCard({ setFilterData }) {
             <>
                 {data.map((item, index) => (
                     <div key={index}>
-                        <h1 className='font-bold text-lg my-2'>{item.filterType}</h1>
+                        <h1 className='font-bold text-lg mt-4 mb-2'>{item.filterType}</h1>
                         <RadioGroup
                             onValueChange={(value) => handleFilterChange(item.filterType.toLowerCase(), value)}
                         >
