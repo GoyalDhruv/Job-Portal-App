@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Button } from '../ui/button'
 import { Bookmark } from 'lucide-react'
 import Proptypes from 'prop-types'
@@ -7,9 +7,12 @@ import { Badge } from '../ui/badge'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { toast } from 'sonner'
+import { saveJobs } from '@/utils/UserApiService'
 
-function Job({ job }) {
+function Job({ job, isBookmarked }) {
     const navigate = useNavigate()
+    const [localIsBookmarked, setLocalIsBookmarked] = useState(isBookmarked);
+
     const user = useSelector(state => state.auth.user)
 
     const handleClick = () => {
@@ -20,6 +23,21 @@ function Job({ job }) {
             navigate(`/login`);
         }
     };
+
+    const handleSaveJob = async () => {
+        try {
+            const data = { jobId: job?._id };
+            const res = await saveJobs(data);
+            if (res.data.success) {
+                toast.success(res.data.message);
+                setLocalIsBookmarked(prevState => !prevState);
+            }
+        } catch (error) {
+            console.error('Submit Error:', error);
+            toast.error(error.response?.data?.message || 'Submission failed.');
+        }
+    };
+
 
     function PostedDate(string) {
         const date = new Date(string);
@@ -40,7 +58,15 @@ function Job({ job }) {
         <div className='p-5 rounded-md shadow-lg bg-white border-gray-100 hover:shadow-xl'>
             <div className='flex items-center justify-between'>
                 <p className='text-sm text-gray-500'>{job?.createdAt ? PostedDate(job?.createdAt) : ""}</p>
-                <Button variant='outline' className="rounded-full" size='icon'><Bookmark /></Button>
+                <Button
+                    variant={'outline'}
+                    className="rounded-full"
+                    size='icon'
+                    onClick={handleSaveJob}
+                >
+                    <Bookmark color={localIsBookmarked ? '#F83002' : '#000'} />
+                </Button>
+
             </div>
             <div className='flex items-center gap-2 my-2'>
                 <Button className='p-6' variant='outline' size='icon'>
@@ -64,20 +90,21 @@ function Job({ job }) {
                 <Badge variant='ghost' className={'text-[#7209b7] font-bold'}>{job?.salary} LPA</Badge>
             </div>
 
-            <div className='flex item-center gap-4 mt-4'>
+            <div className='flex item-center mt-4'>
                 <Button
-                    variant='outline'
                     onClick={handleClick}
                 >Details</Button>
-                <Button>Save For Later</Button>
-
             </div>
+
+
         </div>
+
     )
 }
 
 Job.propTypes = {
-    job: Proptypes.object.isRequired
+    job: Proptypes.object.isRequired,
+    isBookmarked: Proptypes.bool
 };
 
 export default Job

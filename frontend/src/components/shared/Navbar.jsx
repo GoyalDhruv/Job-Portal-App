@@ -62,9 +62,13 @@ function Navbar() {
                         {
                             user && user.role === 'Student' &&
                             <>
-                                <li><Link to='/'>Home</Link></li>
-                                <li><Link to='/jobs'>Jobs</Link></li>
-                                <li><Link to='/browse'>Browse</Link></li>
+                                {/* <li><Link to='/'>Home</Link></li> */}
+                                {window.location.pathname !== '/jobs' &&
+                                    <li><Link to='/jobs'>Jobs</Link></li>
+                                }
+                                {window.location.pathname !== '/browse' &&
+                                    <li><Link to='/browse'>Browse</Link></li>
+                                }
                             </>
                         }
                         {

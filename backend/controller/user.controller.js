@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import getDataUri from "../utils/datauri.js";
 import cloudinary from "../utils/cloudinary.js";
+import { Job } from "../model/job.model.js"
 
 export const register = async (req, res) => {
     try {
@@ -198,6 +199,42 @@ export const changePassword = async (req, res) => {
         user.password = hashedPassword;
         await user.save();
         return res.status(200).json({ user, message: "Password updated successfully", success: true });
+
+    } catch (error) {
+        return res.status(500).json({ message: error.message, success: false });
+    }
+}
+
+export const saveJob = async (req, res) => {
+    try {
+        const { jobId } = req.body;
+        const user = await User.findById(req.id);
+        const alreadySaved = user.jobBookmarks.includes(jobId);
+
+        if (alreadySaved) {
+            user.jobBookmarks.pull(jobId); // Remove if already bookmarked
+        } else {
+            user.jobBookmarks.push(jobId); // Add if not bookmarked
+        }
+
+        await user.save();
+        res.status(200).json({
+            success: true,
+            message: alreadySaved ? 'Removed from saved jobs' : 'Job saved successfully'
+        });
+    } catch (error) {
+        return res.status(500).json({ message: error.message, success: false });
+    }
+};
+
+export const getSavedJobs = async (req, res) => {
+    try {
+        const user = await User.findById(req.id);
+        if (!user) {
+            return res.status(404).json({ message: "User not found", success: false });
+        }
+        const savedJobs = await Job.find({ _id: { $in: user.jobBookmarks } }).select('_id');
+        return res.status(200).json({ savedJobs, success: true });
 
     } catch (error) {
         return res.status(500).json({ message: error.message, success: false });

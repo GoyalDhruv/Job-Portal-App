@@ -53,3 +53,18 @@ export const changePassword = async (formData) => {
     )
     return res
 }
+
+export const saveJobs = async (id) => {
+    const res = await api.post(`${USER_API_END_POINT}/bookmark`, id, {
+        headers: {
+            "Content-Type": 'application/json',
+        },
+        withCredentials: true,
+    })
+    return res
+}
+
+export const getBookmarkedJobs = async () => {
+    const res = await api.get(`${USER_API_END_POINT}/getBookmark`)
+    return res;
+}

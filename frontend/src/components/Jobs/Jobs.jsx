@@ -6,11 +6,12 @@ import Footer from '../shared/Footer'
 import { getAllJobs } from '@/utils/JobApiService'
 import { RotateLoader } from 'react-spinners'
 import { toast } from 'sonner'
+import { getBookmarkedJobs } from '@/utils/UserApiService'
 
 
 function Jobs() {
     const [filterData, setFilterData] = useState({})
-
+    const [bookmarkedIds, setBookmarkedIds] = useState([])
     const [jobs, setJobs] = useState([])
     const [loading, setLoading] = useState(true);
     async function getJob() {
@@ -28,6 +29,21 @@ function Jobs() {
             setLoading(false);
         }
     }
+    
+    const fetchBookmarkedJobs = async () => {
+        try {
+            const res = await getBookmarkedJobs();
+            const bookmarkedJobs = res?.data?.savedJobs || [];
+            const bookmarkedJobIds = new Set(bookmarkedJobs.map(job => job._id));
+            setBookmarkedIds(bookmarkedJobIds);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    useEffect(() => {
+        fetchBookmarkedJobs();
+    }, []);
 
     useEffect(() => {
         getJob();
@@ -65,7 +81,7 @@ function Jobs() {
                                     <div className='grid lg:grid-cols-3 gap-4 md:grid-cols-2'>
                                         {jobs?.map((item, index) => (
                                             <div key={index}>
-                                                <Job job={item} />
+                                                <Job job={item} isBookmarked={bookmarkedIds.has(item._id)} />
                                             </div>
                                         ))}
                                     </div>
