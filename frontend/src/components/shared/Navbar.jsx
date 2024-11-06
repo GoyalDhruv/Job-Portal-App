@@ -21,8 +21,6 @@ function Navbar() {
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
-    console.log()
-
     const handleLogout = async () => {
         try {
             dispatch(setLoading(true));

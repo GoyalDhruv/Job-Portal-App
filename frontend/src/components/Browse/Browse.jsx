@@ -4,12 +4,30 @@ import Footer from '../shared/Footer'
 import Job from '../Jobs/Job'
 import { getAllJobs } from '@/utils/JobApiService'
 import { RotateLoader } from 'react-spinners'
+import { getBookmarkedJobs } from '@/utils/UserApiService'
 
 function Browse() {
     const query = new URLSearchParams(location.search).get('search');
 
     const [jobs, setJobs] = useState([])
     const [loading, setLoading] = useState(true);
+    const [bookmarkedIds, setBookmarkedIds] = useState([])
+
+    const fetchBookmarkedJobs = async () => {
+        try {
+            const res = await getBookmarkedJobs();
+            const bookmarkedJobs = res?.data?.savedJobs || [];
+            const bookmarkedJobIds = new Set(bookmarkedJobs.map(job => job._id));
+            setBookmarkedIds(bookmarkedJobIds);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    useEffect(() => {
+        fetchBookmarkedJobs();
+    }, []);
+
 
     async function getJob() {
         setLoading(true);
@@ -45,7 +63,8 @@ function Browse() {
                         {
                             jobs?.map((job, index) => (
                                 <div key={index}>
-                                    <Job job={job} />
+                                    <Job job={job} isBookmarked={bookmarkedIds.has(job._id)} />
+
                                 </div>
                             ))
                         }

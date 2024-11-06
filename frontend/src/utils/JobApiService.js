@@ -10,7 +10,6 @@ export const getAllJobs = async (query) => {
     if (search) params.append("search", search);
 
     const url = `${JOB_API_END_POINT}/get?${params.toString()}`;
-    console.log(url); // This will log the full URL with query params for debugging
 
     const res = await api.get(url);
     return res;

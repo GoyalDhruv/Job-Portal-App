@@ -37,7 +37,10 @@ const UserSchema = new mongoose.Schema({
             type: String,
             default: ''
         }
-    }
+    }, jobBookmarks: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Job"
+    }]
 }, { timestamps: true })
 
 export const User = mongoose.model('User', UserSchema);
