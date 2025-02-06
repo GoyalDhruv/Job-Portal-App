@@ -47,8 +47,6 @@ function Browse() {
         getJob();
     }, [])
 
-
-
     return (
         <>
             <Navbar />
@@ -59,12 +57,18 @@ function Browse() {
                 :
                 <div className='max-w-7xl mx-auto mb-10 min-h-screen'>
                     <h1 className='font-bold text-xl my-10'>Search Results ({jobs?.length})</h1>
+                    {jobs?.length === 0 &&
+                        <div className='text-2xl text-center font-bold'>No Jobs Found</div>
+                    }
                     <div className='grid grid-cols-3 gap-4'>
                         {
                             jobs?.map((job, index) => (
                                 <div key={index}>
-                                    <Job job={job} isBookmarked={bookmarkedIds.has(job._id)} />
-
+                                    {Array.isArray(bookmarkedIds)?.length > 0 ?
+                                        <Job job={job} isBookmarked={bookmarkedIds.has(job._id)} />
+                                        :
+                                        <Job job={job} />
+                                    }
                                 </div>
                             ))
                         }

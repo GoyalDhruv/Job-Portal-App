@@ -29,7 +29,7 @@ function Jobs() {
             setLoading(false);
         }
     }
-    
+
     const fetchBookmarkedJobs = async () => {
         try {
             const res = await getBookmarkedJobs();
@@ -81,7 +81,11 @@ function Jobs() {
                                     <div className='grid lg:grid-cols-3 gap-4 md:grid-cols-2'>
                                         {jobs?.map((item, index) => (
                                             <div key={index}>
-                                                <Job job={item} isBookmarked={bookmarkedIds.has(item._id)} />
+                                                {Array.isArray(bookmarkedIds)?.length > 0 ?
+                                                    <Job job={item} isBookmarked={bookmarkedIds.has(item._id)} />
+                                                    :
+                                                    <Job job={item} />
+                                                }
                                             </div>
                                         ))}
                                     </div>
